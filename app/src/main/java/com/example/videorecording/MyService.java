@@ -111,24 +111,34 @@ public class MyService extends Service implements SurfaceHolder.Callback{
 
         Toast.makeText(this,"Ok done",Toast.LENGTH_LONG).show();
 
-        camera = Camera.open();
-        mediaRecorder = new MediaRecorder();
-        camera.unlock();
 
-        mediaRecorder.setPreviewDisplay(surfaceHolder.getSurface());
-        mediaRecorder.setCamera(camera);
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
-        mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-        mediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
+        camera = null;
+        try {
+            camera = Camera.open();
 
-        mediaRecorder.setOutputFile(
-                Environment.getExternalStorageDirectory()+"/"+
-                        DateFormat.format("yyyy-MM-dd_kk-mm-ss", new Date().getTime())+
-                        ".mp4"
-        );
+            mediaRecorder = new MediaRecorder();
+            camera.unlock();
 
-        try { mediaRecorder.prepare(); } catch (Exception e) {}
-        mediaRecorder.start();
+            mediaRecorder.setPreviewDisplay(surfaceHolder.getSurface());
+            mediaRecorder.setCamera(camera);
+            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+            mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+            mediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
+
+            mediaRecorder.setOutputFile(
+                    Environment.getExternalStorageDirectory()+"/"+
+                            DateFormat.format("yyyy-MM-dd_kk-mm-ss", new Date().getTime())+
+                            ".mp4"
+            );
+
+            try { mediaRecorder.prepare(); } catch (Exception e) {}
+            mediaRecorder.start();
+
+        }
+        catch (Exception e){
+            Toast.makeText(this,"Camera not working",Toast.LENGTH_LONG).show();
+        }
+
     }
 
     @Override

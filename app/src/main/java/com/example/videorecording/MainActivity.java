@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button b1;
+    Button start,stop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,15 +24,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        b1=findViewById(R.id.button);
+        start=findViewById(R.id.start);
+        stop=findViewById(R.id.stop);
 
 
         if (ContextCompat.checkSelfPermission(   this, Manifest.permission.SYSTEM_ALERT_WINDOW) ==
                 PackageManager.PERMISSION_GRANTED) {
-            b1.setOnClickListener(new View.OnClickListener() {
+            start.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     startService(new Intent(MainActivity.this,MyService.class));
+                }
+            });
+
+            stop.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    stopService(new Intent(MainActivity.this,MyService.class));
                 }
             });
 
@@ -48,10 +56,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        b1.setOnClickListener(new View.OnClickListener() {
+        start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startService(new Intent(MainActivity.this,MyService.class));
+            }
+        });
+
+        stop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                stopService(new Intent(MainActivity.this,MyService.class));
             }
         });
 
