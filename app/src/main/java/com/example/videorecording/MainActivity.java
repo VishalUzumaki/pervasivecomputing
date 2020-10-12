@@ -1,85 +1,66 @@
 package com.example.videorecording;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.hardware.Camera;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity implements SurfaceHolder.Callback {
+    private static final String TAG = "Recorder";
+    public static SurfaceView mSurfaceView;
+    public static SurfaceHolder mSurfaceHolder;
+    public static Camera mCamera ;
+    public static boolean mPreviewRunning;
 
-    Button start,stop;
-
+    /** Called when the activity is first created. */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mSurfaceView = (SurfaceView) findViewById(R.id.surfaceView);
+        mSurfaceHolder = mSurfaceView.getHolder();
+        mSurfaceHolder.addCallback(this);
+        mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-        start=findViewById(R.id.start);
-        stop=findViewById(R.id.stop);
-
-
-        if (ContextCompat.checkSelfPermission(   this, Manifest.permission.SYSTEM_ALERT_WINDOW) ==
-                PackageManager.PERMISSION_GRANTED) {
-            start.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startService(new Intent(MainActivity.this,MyService.class));
-                }
-            });
-
-            stop.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    stopService(new Intent(MainActivity.this,MyService.class));
-                }
-            });
-
-        }
-        else {
-
-            Intent myIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-            startActivity(myIntent);
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SYSTEM_ALERT_WINDOW}, 1);
-//            ContextCompat(this, Manifest.permission.SYSTEM_ALERT_WINDOW,11);
-            Toast.makeText(this, "Nothing", Toast.LENGTH_SHORT).show();
-//            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-        }
-
-
-        start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startService(new Intent(MainActivity.this,MyService.class));
+        Button btnStart = (Button) findViewById(R.id.start);
+        btnStart.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(MainActivity.this, MyService.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startService(intent);
+                finish();
             }
         });
 
-        stop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                stopService(new Intent(MainActivity.this,MyService.class));
+        Button btnStop = (Button) findViewById(R.id.stop);
+        btnStop.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                stopService(new Intent(MainActivity.this, MyService.class));
             }
         });
-
     }
-
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK){
-            startService(new Intent(MainActivity.this,MyService.class));
-        }
+    public void surfaceCreated(SurfaceHolder holder) {
 
     }
 
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        // TODO Auto-generated method stub
+
+    }
 }
